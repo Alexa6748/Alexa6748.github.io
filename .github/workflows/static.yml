@@ -29,14 +29,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4  # Обновлено до v4 (или v5, если нужно)
+        uses: actions/checkout@v4
+
       - name: Setup Pages
-        uses: actions/configure-pages@v5  # Обновлено до v5
+        uses: actions/configure-pages@v5
+
+      - name: Replace API key with secret  
+        run: |
+          sed -i 's/PLACEHOLDER_KEY/${{ secrets.2GIS_KEY }}/g' index.html  # Заменяет в index.html (или укажите ваш файл)
+        env:
+          TWO_GIS_KEY: ${{ secrets.2GIS_KEY }}  
+
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4  # Обновлено до v4 (требует v4 artifact actions)
+        uses: actions/upload-pages-artifact@v4
         with:
           # Upload entire repository
           path: '.'
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4  # Обновлено до v4
+        uses: actions/deploy-pages@v4
