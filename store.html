@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SberTech Store - Магазин электроники</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #eae6d2; color: #333; }
+        header { 
+            background: linear-gradient(135deg, #9ad8f7 0%, #cbe88d 100%); 
+            color: #333; 
+            padding: 10px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 28px; font-weight: bold; }
+        .search-bar { 
+            flex: 1; 
+            max-width: 500px; 
+            display: flex; 
+            background: white; 
+            border-radius: 25px; 
+            padding: 5px; 
+            margin: 0 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .search-bar input[type="text"] { 
+            flex: 1; 
+            padding: 10px 15px; 
+            border: none; 
+            border-radius: 20px; 
+            outline: none; 
+            font-size: 16px;
+        }
+        .search-bar button { 
+            padding: 10px 20px; 
+            border: none; 
+            background: #ffb92e; 
+            color: #333; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            margin-left: 5px;
+        }
+        .header-icons { display: flex; gap: 15px; align-items: center; }
+        .profile { background: rgba(255,255,255,0.3); padding: 10px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .cart { background: rgba(255,255,255,0.3); padding: 10px; border-radius: 50%; cursor: pointer; position: relative; }
+        .cart-count { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        nav { background: #f3efdd; padding: 10px 20px; border-bottom: 2px solid #d4c8b0; }
+        .nav-menu { display: flex; justify-content: center; gap: 20px; list-style: none; margin: 0; padding: 0; }
+        .nav-menu li a { text-decoration: none; color: #333; font-weight: bold; padding: 10px; border-radius: 5px; transition: background 0.3s; }
+        .nav-menu li a:hover { background: #9ad8f7; }
+        .slider { background: #fff; padding: 20px; text-align: center; overflow: hidden; position: relative; }
+        .slider img { width: 100%; height: 300px; object-fit: cover; border-radius: 10px; }
+        .slider-dots { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; cursor: pointer; }
+        .dot.active { background: #ffb92e; }
+        .filters { display: flex; background: #f3efdd; padding: 20px; gap: 20px; border-bottom: 2px solid #d4c8b0; }
+        .filter-group { flex: 1; }
+        .filter-title { font-weight: bold; margin-bottom: 10px; }
+        .filter-option { display: block; margin: 5px 0; cursor: pointer; }
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .product-card { background: #f3efdd; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; border: 1px solid #d4c8b0; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-img { width: 100%; height: 180px; background: linear-gradient(135deg, #9ad8f7 0%, #cbe88d 100%); border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+        .product-name { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #333; }
+        .price { font-size: 24px; font-weight: bold; color: #ffb92e; margin-bottom: 5px; }
+        .installments { font-size: 14px; color: #9ad8f7; margin-bottom: 15px; background: #e7f3ff; padding: 5px 10px; border-radius: 5px; }
+        .buy-btn { background: linear-gradient(135deg, #ffb92e 0%, #ff8c00 100%); color: #333; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-size: 16px; width: 100%; transition: background 0.3s; }
+        .buy-btn:hover { background: linear-gradient(135deg, #ff8c00 0%, #ff6600 100%); }
+        .hits-section { padding: 20px; background: #fff; margin: 20px; border-radius: 10px; text-align: center; }
+        .hits-title { font-size: 24px; margin-bottom: 20px; }
+        footer { background: #d4c8b0; padding: 20px; text-align: center; margin-top: 40px; }
+        .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 10px; }
+        .footer-links a { text-decoration: none; color: #333; }
+        .slogan { position: fixed; top: 10px; right: 10px; background: #cbe88d; color: #333; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 5px; }
+        .slogan-close {
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            padding: 2px 5px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+        }
+        .slogan-close:hover {
+            background: rgba(255,255,255,0.8);
+        }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #f3efdd; padding: 30px; border-radius: 15px; box-shadow: 0 0 30px rgba(0,0,0,0.3); z-index: 2000; max-width: 500px; width: 90%; border: 1px solid #d4c8b0; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; }
+        .close { float: right; cursor: pointer; font-size: 28px; color: #999; }
+        .close:hover { color: #333; }
+        .payment-options { display: flex; gap: 15px; margin: 20px 0; }
+        .payment-btn { flex: 1; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; transition: background 0.3s; }
+        .sber-pay { background: linear-gradient(135deg, #9ad8f7 0%, #cbe88d 100%); color: #333; }
+        .sber-pay:hover { background: linear-gradient(135deg, #cbe88d 0%, #a8d5e5 100%); }
+        .installments-pay { background: linear-gradient(135deg, #ffb92e 0%, #ff8c00 100%); color: #333; }
+        .installments-pay:hover { background: linear-gradient(135deg, #ff8c00 0%, #ff6600 100%); }
+        .months { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+        .month-btn { padding: 10px 15px; border: 2px solid #9ad8f7; background: #f3efdd; cursor: pointer; border-radius: 8px; transition: all 0.3s; color: #333; }
+        .month-btn:hover { background: #9ad8f7; color: #333; }
+        .confirm-btn { background: linear-gradient(135deg, #cbe88d 0%, #9ad8f7 100%); color: #333; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-size: 16px; width: 100%; margin-top: 10px; transition: background 0.3s; }
+        .confirm-btn:hover { background: linear-gradient(135deg, #9ad8f7 0%, #a8d5e5 100%); }
+        .address-confirm { background: #eae6d2; padding: 15px; border-radius: 10px; margin: 10px 0; text-align: center; border: 1px solid #d4c8b0; }
+        /* Адаптив */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 10px; }
+            .search-bar { max-width: 100%; margin: 0; }
+            .nav-menu { flex-direction: column; gap: 5px; }
+            .filters { flex-direction: column; }
+            .products { grid-template-columns: 1fr; }
+            .payment-options { flex-direction: column; }
+            .months { justify-content: center; }
+            .footer-links { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">SberTech Store</div>
+        <div class="search-bar">
+            <input type="text" placeholder="Поиск товаров...">
+            <button>Найти</button>
+        </div>
+        <div class="header-icons">
+            <div class="profile">Александра 👤</div>
+            <div class="cart">🛒 <span class="cart-count">0</span></div>
+        </div>
+    </header>
+    <nav>
+        <ul class="nav-menu">
+            <li><a href="#">Ноутбуки</a></li>
+            <li><a href="#">Смартфоны</a></li>
+            <li><a href="#">ТВ и аудио</a></li>
+            <li><a href="#">Акции</a></li>
+            <li><a href="#">Контакты</a></li>
+        </ul>
+    </nav>
+    <div class="slogan" id="slogan">
+        Увидел значок Сбер ID - значит безопасно! Со Сбером надежно!
+        <span class="slogan-close" onclick="closeSlogan()">&times;</span>
+    </div>
+    <div class="slider">
+        <img src="https://via.placeholder.com/1200x300/9ad8f7/cbe88d?text=Акция:+Скидка+20%+на+ноутбуки" alt="Акция">
+        <div class="slider-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </div>
+    <div class="hits-section">
+        <h2 class="hits-title">Хиты продаж</h2>
+        <div class="products">
+            <div class="product-card">
+                <div class="product-img">💻</div>
+                <h3 class="product-name">Ноутбук SberBook Pro</h3>
+                <div class="price">99 999 ₽</div>
+                <div class="installments">Плати Частями 8 333 ₽ в месяц</div>
+                <button class="buy-btn" onclick="openPaymentModal('SberBook Pro', 99999)">В корзину</button>
+            </div>
+            <div class="product-card">
+                <div class="product-img">📱</div>
+                <h3 class="product-name">Смартфон SberPhone X</h3>
+                <div class="price">49 999 ₽</div>
+                <div class="installments">Плати Частями 4 167 ₽ в месяц</div>
+                <button class="buy-btn" onclick="openPaymentModal('SberPhone X', 49999)">В корзину</button>
+            </div>
+        </div>
+    </div>
+    <div class="filters">
+        <div class="filter-group">
+            <div class="filter-title">Цена</div>
+            <div class="filter-option"><input type="checkbox"> До 50 000 ₽</div>
+            <div class="filter-option"><input type="checkbox"> 50 000 - 100 000 ₽</div>
+            <div class="filter-option"><input type="checkbox"> Свыше 100 000 ₽</div>
+        </div>
+        <div class="filter-group">
+            <div class="filter-title">Бренд</div>
+            <div class="filter-option"><input type="checkbox"> SberBook</div>
+            <div class="filter-option"><input type="checkbox"> Apple</div>
+            <div class="filter-option"><input type="checkbox"> Samsung</div>
+        </div>
+    </div>
+    <div class="products">
+        <div class="product-card">
+            <div class="product-img">💻</div>
+            <h3 class="product-name">Ноутбук SberBook Ultra</h3>
+            <div class="price">129 999 ₽</div>
+            <div class="installments">Плати Частями 10 833 ₽ в месяц</div>
+            <button class="buy-btn" onclick="openPaymentModal('SberBook Ultra', 129999)">В корзину</button>
+        </div>
+        <div class="product-card">
+            <div class="product-img">💻</div>
+            <h3 class="product-name">Ноутбук SberBook Lite</h3>
+            <div class="price">69 999 ₽</div>
+            <div class="installments">Плати Частями 5 833 ₽ в месяц</div>
+            <button class="buy-btn" onclick="openPaymentModal('SberBook Lite', 69999)">В корзину</button>
+        </div>
+        <div class="product-card">
+            <div class="product-img">💻</div>
+            <h3 class="product-name">Ноутбук SberBook Gaming</h3>
+            <div class="price">149 999 ₽</div>
+            <div class="installments">Плати Частями 12 500 ₽ в месяц</div>
+            <button class="buy-btn" onclick="openPaymentModal('SberBook Gaming', 149999)">В корзину</button>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-links">
+            <a href="#">О компании</a>
+            <a href="#">Доставка</a>
+            <a href="#">Контакты</a>
+            <a href="#">Поддержка</a>
+        </div>
+        <p>&copy; 2025 SberTech Store. Все права защищены.</p>
+    </footer>
+
+    <div id="modal-overlay" class="modal-overlay" onclick="closePaymentModal()"></div>
+    <div id="payment-modal" class="modal">
+        <span class="close" onclick="closePaymentModal()">&times;</span>
+        <h2 id="product-name">Товар</h2>
+        <div class="address-confirm">
+            <p>Адрес доставки: Санкт-Петербург, ул. Невский проспект, 1 (из Сбер ID)</p>
+            <button class="confirm-btn" onclick="confirmAddress()">Подтвердить адрес</button>
+        </div>
+        <div id="payment-section" style="display:none;">
+            <h3>Выберите способ оплаты</h3>
+            <div class="payment-options">
+                <button class="payment-btn sber-pay" onclick="selectSberPay()">Sber Pay</button>
+                <button class="payment-btn installments-pay" onclick="selectInstallments()">Плати Частями</button>
+            </div>
+            <div id="installments-section" style="display:none;">
+                <h4>Выберите срок рассрочки</h4>
+                <div class="months">
+                    <button class="month-btn" onclick="payInstallments(3)">3 мес</button>
+                    <button class="month-btn" onclick="payInstallments(6)">6 мес</button>
+                    <button class="month-btn" onclick="payInstallments(12)">12 мес</button>
+                </div>
+            </div>
+            <div id="sberpay-section" style="display:none;">
+                <p>Подтвердите оплату Sber Pay</p>
+                <button class="confirm-btn" onclick="confirmSberPay()">Да, оплатить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPrice = 0;
+        function closeSlogan() {
+            document.getElementById('slogan').style.display = 'none';
+        }
+        function openPaymentModal(name, price) {
+            document.getElementById('product-name').textContent = name;
+            currentPrice = price;
+            document.getElementById('modal-overlay').style.display = 'block';
+            document.getElementById('payment-modal').style.display = 'block';
+            document.getElementById('payment-section').style.display = 'none';
+        }
+
+        function confirmAddress() {
+            document.getElementById('payment-section').style.display = 'block';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('payment-modal').style.display = 'none';
+            document.getElementById('payment-section').style.display = 'none';
+            document.getElementById('installments-section').style.display = 'none';
+            document.getElementById('sberpay-section').style.display = 'none';
+        }
+
+        function selectSberPay() {
+            document.getElementById('installments-section').style.display = 'none';
+            document.getElementById('sberpay-section').style.display = 'block';
+        }
+
+        function selectInstallments() {
+            document.getElementById('sberpay-section').style.display = 'none';
+            document.getElementById('installments-section').style.display = 'block';
+            // Обновляем текст кнопок с расчетом ежемесячного платежа
+            const monthsOptions = [3, 6, 12];
+            const monthBtns = document.querySelectorAll('.month-btn');
+            monthBtns.forEach((btn, index) => {
+                const months = monthsOptions[index];
+                const monthly = Math.round(currentPrice / months);
+                btn.innerHTML = `${months} мес (${monthly.toLocaleString()} ₽/мес)`;
+            });
+        }
+
+        function confirmSberPay() {
+            alert('Оплата прошла успешно!');
+            closePaymentModal();
+        }
+
+        function payInstallments(months) {
+            const monthly = Math.round(currentPrice / months);
+            alert(`Оплата прошла успешно! ${months} месяцев по ${monthly} ₽/мес`);
+            closePaymentModal();
+        }
+
+        
+
+        // Простой слайдер
+        let currentSlide = 0;
+        const slides = ['https://via.placeholder.com/1200x300/9ad8f7/cbe88d?text=Акция:+Скидка+20%+на+ноутбуки', 'https://via.placeholder.com/1200x300/cbe88d/9ad8f7?text=Новинки+SberPhone', 'https://via.placeholder.com/1200x300/ffb92e/eae6d2?text=Гарантия+от+Сбера'];
+        const sliderImg = document.querySelector('.slider img');
+        const dots = document.querySelectorAll('.dot');
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            sliderImg.src = slides[currentSlide];
+            dots.forEach((dot, index) => dot.classList.toggle('active', index === currentSlide));
+        }
+        setInterval(nextSlide, 3000);
+    </script>
+</body>
+</html>
