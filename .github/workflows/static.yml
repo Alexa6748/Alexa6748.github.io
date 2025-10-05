@@ -36,9 +36,9 @@ jobs:
 
       - name: Replace API key with secret  
         run: |
-          sed -i 's/PLACEHOLDER_KEY/${{ secrets.2GIS_KEY }}/g' index.html  # Заменяет в index.html (или укажите ваш файл)
+          sed -i 's/PLACEHOLDER_KEY/${{ secrets.TWO_GIS_KEY }}/g' index.html  # Заменяет в index.html (или укажите ваш файл)
         env:
-          TWO_GIS_KEY: ${{ secrets.2GIS_KEY }}  
+          TWO_GIS_KEY: ${{ secrets.TWO_GIS_KEY }}  
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
