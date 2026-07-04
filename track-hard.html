@@ -128,7 +128,18 @@
 
   (function(){
     const s = getState();
-    if (s.team) renderTeam();
+    if (s.team) {
+      // уже был в этом треке — просто показываем результат
+      renderTeam();
+    } else if (s.name) {
+      // имя уже известно (пришли из другого трека) — назначаем команду сразу,
+      // не спрашивая имя заново
+      const team = assignTeam(s.name);
+      setState({ team, path: 'hard' });
+      renderTeam();
+    } else {
+      qs('#nameInput').value = s.name || '';
+    }
     mountResetControl('#resetLink');
   })();
 </script>
