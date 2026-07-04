@@ -32,20 +32,58 @@
   </div>
 
   <div class="paths" id="pathChoice" style="display:none;">
-    <button class="path-card easy" onclick="choosePath('easy')">
+    <button class="path-card easy" onclick="choosePath('easy', event)">
       <span class="path-tag">Easy Mode</span>
+      <svg class="dome-btn" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <radialGradient id="domeEasy" cx="38%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#ff8a7a"/>
+            <stop offset="45%" stop-color="#ff4a3d"/>
+            <stop offset="100%" stop-color="#c21f1f"/>
+          </radialGradient>
+          <linearGradient id="baseEasy" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a3a44"/>
+            <stop offset="100%" stop-color="#18181e"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="100" cy="118" rx="88" ry="30" fill="url(#baseEasy)" stroke="#000" stroke-opacity=".3"/>
+        <ellipse cx="100" cy="104" rx="88" ry="26" fill="#2a2a32"/>
+        <circle cx="100" cy="78" r="76" fill="url(#domeEasy)"/>
+        <ellipse cx="72" cy="45" rx="32" ry="16" fill="#fff" opacity=".35"/>
+        <text x="100" y="92" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="800" font-size="34" fill="#fff" style="paint-order:stroke; stroke:#c21f1f; stroke-width:3px;">easy</text>
+      </svg>
       <h3>Спокойная жизнь</h3>
       <p>Идёте по стандартной программе. Мастер-классы и кейс — в штатном режиме. Дополнительно — попадаете в один из 6 миров бизнес-симуляции и играете за NPC.</p>
       <div class="path-quote">«That was easy» — но это тоже путь.</div>
     </button>
 
-    <button class="path-card hard" onclick="choosePath('hard')">
+    <button class="path-card hard" onclick="choosePath('hard', event)">
       <span class="path-tag">Hard Mode</span>
+      <svg class="dome-btn" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <radialGradient id="domeHard" cx="38%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#7cff6b"/>
+            <stop offset="45%" stop-color="#ff3ea5"/>
+            <stop offset="100%" stop-color="#6b0f47"/>
+          </radialGradient>
+          <linearGradient id="baseHard" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a3a44"/>
+            <stop offset="100%" stop-color="#18181e"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="100" cy="118" rx="88" ry="30" fill="url(#baseHard)" stroke="#000" stroke-opacity=".3"/>
+        <ellipse cx="100" cy="104" rx="88" ry="26" fill="#2a2a32"/>
+        <circle cx="100" cy="78" r="76" fill="url(#domeHard)"/>
+        <ellipse cx="72" cy="45" rx="32" ry="16" fill="#fff" opacity=".3"/>
+        <text x="100" y="92" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="800" font-size="30" fill="#fff" style="paint-order:stroke; stroke:#6b0f47; stroke-width:3px;">hard</text>
+      </svg>
       <h3>Движуха</h3>
       <p>Через 10–15 минут после старта вас распределят в команду. Вы — спасатели программы: проводите воркшопы вместо отменённых спикеров, выполняете квесты, получаете мерч.</p>
       <div class="path-quote">Не пройдёшь квест — станешь обычным NPC.</div>
     </button>
   </div>
+
+  <audio id="easySound" src="assets/audio/that-was-easy.mp3" preload="auto"></audio>
 
   <div class="divider"></div>
 
@@ -81,9 +119,24 @@
     qs('#pathChoice').style.display = 'grid';
   }
 
-  function choosePath(path){
+  function choosePath(path, evt){
     setState({ path });
-    window.location.href = path === 'easy' ? 'track-easy.html' : 'track-hard.html';
+    if (path === 'easy') {
+      if (evt) evt.preventDefault();
+      const sound = qs('#easySound');
+      const go = () => { window.location.href = 'track-easy.html'; };
+      let navigated = false;
+      const navigateOnce = () => { if (!navigated) { navigated = true; go(); } };
+      sound.currentTime = 0;
+      const playPromise = sound.play();
+      sound.addEventListener('ended', navigateOnce, { once: true });
+      // подстраховка: если звук не смог проиграться (нет файла/автоплей заблокирован),
+      // не даём участнику зависнуть на месте
+      setTimeout(navigateOnce, 1800);
+      if (playPromise) playPromise.catch(navigateOnce);
+    } else {
+      window.location.href = 'track-hard.html';
+    }
   }
 
   (function(){
