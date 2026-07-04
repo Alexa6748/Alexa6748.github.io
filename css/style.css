@@ -338,3 +338,17 @@ footer.site a{color:var(--hard2); text-decoration:none;}
   text-decoration:underline;
   background:none; border:none; cursor:pointer; padding:0;
 }
+
+/* --- SVG-кнопки в стиле физической "easy button" --- */
+.dome-btn{
+  width:100%;
+  max-width:180px;
+  display:block;
+  margin:6px auto 16px;
+  filter:drop-shadow(0 8px 16px rgba(0,0,0,.45));
+  transition:transform .15s ease, filter .15s ease;
+}
+.path-card:hover .dome-btn{ transform:translateY(-3px) scale(1.02); }
+.path-card:active .dome-btn{ transform:translateY(2px) scale(.98); }
+.path-card.easy:hover .dome-btn{ filter:drop-shadow(0 10px 22px rgba(255,74,61,.45)); }
+.path-card.hard:hover .dome-btn{ filter:drop-shadow(0 10px 22px rgba(255,62,165,.45)); }
