@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Движуха — КРИЗИС.EXE</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">ТРЕК · ДВИЖУХА</div>
+  <h1>Вы спасаете мероприятие</h1>
+  <p class="lead">Через 10–15 минут после начала вас соберут в команду на точке на карте. Не пройдёте квест — станете обычным NPC. Дойдёте до конца — заберёте мерч и войдёте в финальный ролик.</p>
+
+  <div id="nameGate" class="panel">
+    <h2>Вступить в команду</h2>
+    <div class="field">
+      <label for="nameInput">Ваше имя</label>
+      <input id="nameInput" type="text" placeholder="Например, Александра">
+    </div>
+    <button class="btn primary" onclick="submitName()">Найти мою команду →</button>
+  </div>
+
+  <div id="result" style="display:none;">
+
+    <div class="panel" id="teamCard"></div>
+
+    <h2 style="margin-top:24px;">Карта площадки</h2>
+    <p class="lead" style="font-size:14px;">Точка вашей команды отмечена ярко. Замените <code class="mono">assets/map.jpg</code> на реальную схему площадки — точки пересчитаются автоматически под число команд.</p>
+    <div class="map-wrap" id="mapWrap">
+      <div class="map-fallback">Загрузите фото площадки в <span class="mono">&nbsp;assets/map.jpg&nbsp;</span>, чтобы точки легли поверх неё</div>
+    </div>
+
+    <h2 style="margin-top:28px;">Квесты</h2>
+    <div class="quest-track" id="questTrack"></div>
+
+  </div>
+
+  <div class="divider"></div>
+  <div class="panel panel-tight">
+    <span class="badge on">Устали?</span>
+    <span style="color:var(--muted); font-size:14px; margin-left:8px;">Из движухи можно выйти в любой момент — вы станете обычным NPC своего мира.</span>
+    <br><br>
+    <a class="btn ghost" href="track-easy.html">Перейти в «Спокойную жизнь» →</a>
+  </div>
+
+  <footer class="site">
+    <a href="index.html">← на главную</a> &nbsp;·&nbsp;
+    <a href="#" id="resetLink">сбросить прогресс</a>
+  </footer>
+</div>
+
+<script src="js/app.js"></script>
+<script src="js/teams.js"></script>
+<script>
+  function renderTeam(){
+    const s = getState();
+    qs('#nameGate').style.display = 'none';
+    qs('#result').style.display = 'block';
+
+    const t = s.team;
+    qs('#teamCard').innerHTML = `
+      <div class="eyebrow" style="margin-bottom:8px">ВАША КОМАНДА</div>
+      <h2>${t.label}</h2>
+      <p style="color:var(--muted); font-size:14px;">Всего команд на площадке: ${t.total}. Соберитесь на своей точке на карте ниже.</p>
+    `;
+
+    const pt = teamMapPoint(t.index, t.total);
+    const mapWrap = qs('#mapWrap');
+    const img = new Image();
+    img.onload = function(){
+      mapWrap.innerHTML = `<img src="assets/map.jpg" alt="Карта площадки">`;
+      addPin();
+    };
+    img.onerror = function(){ addPin(); }; // рисуем точку даже без фото — на заглушке
+    img.src = 'assets/map.jpg';
+
+    function addPin(){
+      const pin = document.createElement('div');
+      pin.className = 'map-pin me';
+      pin.style.left = pt.x + '%';
+      pin.style.top = pt.y + '%';
+      pin.textContent = t.label;
+      mapWrap.appendChild(pin);
+    }
+
+    renderQuests();
+  }
+
+  function renderQuests(){
+    const statuses = getQuestState();
+    qs('#questTrack').innerHTML = QUESTS.map((q, i) => {
+      const prevDone = i === 0 || statuses[QUESTS[i-1].id] === 'done';
+      const status = statuses[q.id] || (prevDone ? 'open' : 'locked');
+      const cls = status === 'done' ? 'done' : status === 'failed' ? 'failed' : status === 'locked' ? 'locked' : '';
+      return `
+        <div class="quest ${cls}">
+          <div>
+            <div class="quest-num">ДЕНЬ ${q.day} · КВЕСТ</div>
+            <div class="quest-title">${q.title}</div>
+            <div class="quest-desc">${q.desc}</div>
+          </div>
+          <div class="quest-actions">
+            ${status === 'done' ? '<span class="badge on">пройден</span>' : ''}
+            ${status === 'failed' ? '<span class="badge off">не пройден → NPC</span>' : ''}
+            ${status === 'open' ? `
+              <button class="btn primary" onclick="markQuest('${q.id}','done')">Куратор подтвердил ✓</button>
+              <button class="btn ghost" onclick="markQuest('${q.id}','failed')">Не прошли</button>
+            ` : ''}
+            ${status === 'locked' ? '<span class="badge">заблокирован</span>' : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function markQuest(id, status){
+    setQuestStatus(id, status);
+    renderQuests();
+  }
+
+  function submitName(){
+    const name = qs('#nameInput').value.trim() || 'Гость';
+    const team = assignTeam(name);
+    setState({ name, team, path: 'hard' });
+    renderTeam();
+  }
+
+  (function(){
+    const s = getState();
+    if (s.team) renderTeam();
+    mountResetControl('#resetLink');
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КРИЗИС.EXE — выбери путь</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">СИСТЕМА ЗАПУЩЕНА · ДЕНЬ 1 ИЗ 3</div>
+
+  <h1 class="glitch" data-text="Программа изменена.">Программа изменена.</h1>
+  <p class="lead">Часть спикеров отменилась. Часть материалов не успевает. Мы не скрываем это — мы превращаем в игру. Выберите, каким участником вы будете эти три дня.</p>
+
+  <div class="paths">
+    <button class="path-card easy" onclick="choosePath('easy')">
+      <span class="path-tag">Easy Mode</span>
+      <h3>Спокойная жизнь</h3>
+      <p>Идёте по стандартной программе. Мастер-классы и кейс — в штатном режиме. Дополнительно — попадаете в один из 6 миров бизнес-симуляции и играете за NPC.</p>
+      <div class="path-quote">«That was easy» — но это тоже путь.</div>
+    </button>
+
+    <button class="path-card hard" onclick="choosePath('hard')">
+      <span class="path-tag">Hard Mode</span>
+      <h3>Движуха</h3>
+      <p>Через 10–15 минут после старта вас распределят в команду. Вы — спасатели программы: проводите воркшопы вместо отменённых спикеров, выполняете квесты, получаете мерч.</p>
+      <div class="path-quote">Не пройдёшь квест — станешь обычным NPC.</div>
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="panel panel-tight">
+    <div class="eyebrow" style="margin-bottom:8px">Как это работает</div>
+    <p style="color:var(--muted); font-size:14px; line-height:1.6; margin:0;">
+      Выбор сохраняется в этом браузере на этом устройстве. Вернуться к своему прогрессу можно в любой момент — просто откройте эту страницу снова с телефона, на который сканировали QR.
+    </p>
+  </div>
+
+  <footer class="site">
+    <a href="#" id="resetLink">сбросить прогресс</a>
+  </footer>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  function choosePath(path){
+    setState({ path });
+    window.location.href = path === 'easy' ? 'track-easy.html' : 'track-hard.html';
+  }
+
+  // если участник уже выбирал путь раньше — сразу предлагаем вернуться
+  (function(){
+    const s = getState();
+    if (s.path) {
+      const el = document.createElement('div');
+      el.className = 'panel panel-tight';
+      el.style.marginTop = '18px';
+      el.innerHTML = `<span class="badge on">прогресс сохранён</span>
+        &nbsp; вы уже выбрали «${s.path === 'easy' ? 'Спокойную жизнь' : 'Движуху'}».
+        <a class="btn ghost" style="margin-left:10px" href="${s.path === 'easy' ? 'track-easy.html' : 'track-hard.html'}">Продолжить →</a>`;
+      qs('.wrap').insertBefore(el, qs('footer.site'));
+    }
+    mountResetControl('#resetLink');
+  })();
+</script>
+</body>
+</html>
