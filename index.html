@@ -20,9 +20,18 @@
       <label for="nameInput">Ваше имя</label>
       <input id="nameInput" type="text" placeholder="Например, Александра">
     </div>
+    <button class="btn primary" onclick="saveName()">Сохранить имя →</button>
   </div>
 
-  <div class="paths">
+  <div id="nameLocked" class="panel panel-tight" style="display:none;">
+    <span class="badge on">имя сохранено</span>
+    <span class="mono" id="savedNameLabel" style="margin-left:8px; font-weight:600;"></span>
+    <div style="color:var(--muted); font-size:13px; margin-top:8px;">
+      Чтобы сменить имя — сбросьте прогресс внизу страницы.
+    </div>
+  </div>
+
+  <div class="paths" id="pathChoice" style="display:none;">
     <button class="path-card easy" onclick="choosePath('easy')">
       <span class="path-tag">Easy Mode</span>
       <h3>Спокойная жизнь</h3>
@@ -54,21 +63,34 @@
 
 <script src="js/app.js"></script>
 <script>
-  function choosePath(path){
+  function saveName(){
     const name = qs('#nameInput').value.trim();
     if (!name) {
       qs('#nameInput').focus();
       qs('#nameInput').style.borderColor = 'var(--hard)';
       return;
     }
-    setState({ name, path });
+    setState({ name });
+    showLockedName(name);
+  }
+
+  function showLockedName(name){
+    qs('#nameGate').style.display = 'none';
+    qs('#nameLocked').style.display = 'block';
+    qs('#savedNameLabel').textContent = name;
+    qs('#pathChoice').style.display = 'grid';
+  }
+
+  function choosePath(path){
+    setState({ path });
     window.location.href = path === 'easy' ? 'track-easy.html' : 'track-hard.html';
   }
 
-  // если участник уже выбирал путь раньше — сразу предлагаем вернуться
   (function(){
     const s = getState();
-    if (s.name) qs('#nameInput').value = s.name;
+    if (s.name) {
+      showLockedName(s.name);
+    }
     if (s.path) {
       const el = document.createElement('div');
       el.className = 'panel panel-tight';
