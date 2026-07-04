@@ -77,7 +77,18 @@
 
   (function(){
     const s = getState();
-    if (s.world) renderWorld();
+    if (s.world) {
+      // уже был в этом треке — просто показываем результат
+      renderWorld();
+    } else if (s.name) {
+      // имя уже известно (пришли из другого трека) — назначаем мир сразу,
+      // не спрашивая имя заново
+      const world = assignWorld(s.name);
+      setState({ world, path: 'easy' });
+      renderWorld();
+    } else {
+      qs('#nameInput').value = s.name || '';
+    }
     mountResetControl('#resetLink');
   })();
 </script>
