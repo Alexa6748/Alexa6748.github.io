@@ -14,6 +14,14 @@
   <h1 class="glitch" data-text="Программа изменена.">Программа изменена.</h1>
   <p class="lead">Часть спикеров отменилась. Часть материалов не успевает. Мы не скрываем это — мы превращаем в игру. Выберите, каким участником вы будете эти три дня.</p>
 
+  <div class="panel" id="nameGate">
+    <h2>Как вас записать?</h2>
+    <div class="field">
+      <label for="nameInput">Ваше имя</label>
+      <input id="nameInput" type="text" placeholder="Например, Александра">
+    </div>
+  </div>
+
   <div class="paths">
     <button class="path-card easy" onclick="choosePath('easy')">
       <span class="path-tag">Easy Mode</span>
@@ -47,13 +55,20 @@
 <script src="js/app.js"></script>
 <script>
   function choosePath(path){
-    setState({ path });
+    const name = qs('#nameInput').value.trim();
+    if (!name) {
+      qs('#nameInput').focus();
+      qs('#nameInput').style.borderColor = 'var(--hard)';
+      return;
+    }
+    setState({ name, path });
     window.location.href = path === 'easy' ? 'track-easy.html' : 'track-hard.html';
   }
 
   // если участник уже выбирал путь раньше — сразу предлагаем вернуться
   (function(){
     const s = getState();
+    if (s.name) qs('#nameInput').value = s.name;
     if (s.path) {
       const el = document.createElement('div');
       el.className = 'panel panel-tight';
