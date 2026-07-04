@@ -1,1 +1,340 @@
+/* ============================================================
+   КРИЗИС.EXE — общая тема
+   Палитра:
+   --bg        #0a0a0f  фон, "серверная комната"
+   --bg-panel  #13131a  панели
+   --line      #23232e  тонкие разделители
+   --text      #e8e8ef  основной текст
+   --muted     #8a8a9a  вторичный текст
+   --easy      #6bb9ff  спокойная жизнь (голубой, штиль)
+   --hard      #ff3ea5  движуха (портальный маджента)
+   --hard2     #7cff6b  движуха, акцент "квест пройден" (кислотный зелёный)
+   Шрифты: JetBrains Mono (дисплей/лейблы), Inter (текст)
+   ============================================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#0a0a0f;
+  --bg-panel:#13131a;
+  --bg-panel-2:#191922;
+  --line:#25252f;
+  --text:#e8e8ef;
+  --muted:#8d8da0;
+  --easy:#6bb9ff;
+  --easy-dim:#274257;
+  --hard:#ff3ea5;
+  --hard-dim:#4a1b3a;
+  --hard2:#7cff6b;
+  --radius:14px;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(124,255,107,0.05), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(255,62,165,0.06), transparent 45%);
+}
+
+.mono{font-family:'JetBrains Mono',monospace;}
+
+a{color:inherit;}
+
+.wrap{
+  max-width:880px;
+  margin:0 auto;
+  padding:32px 20px 80px;
+}
+
+/* --- шапка/лейбл-строка, встречается на всех экранах --- */
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+.eyebrow::before{
+  content:"";
+  width:8px;height:8px;border-radius:50%;
+  background:var(--hard2);
+  box-shadow:0 0 8px var(--hard2);
+  flex:none;
+}
+
+h1{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:800;
+  font-size:clamp(28px,5vw,46px);
+  line-height:1.08;
+  letter-spacing:-0.01em;
+  margin:0 0 14px;
+}
+h2{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:700;
+  font-size:clamp(20px,3vw,26px);
+  margin:0 0 10px;
+}
+p.lead{
+  color:var(--muted);
+  font-size:17px;
+  line-height:1.6;
+  max-width:60ch;
+}
+
+/* --- glitch эффект на заголовке лендинга --- */
+.glitch{position:relative; display:inline-block;}
+.glitch::before,.glitch::after{
+  content:attr(data-text);
+  position:absolute; left:0; top:0;
+  width:100%; overflow:hidden;
+  color:var(--text);
+  background:var(--bg);
+  clip-path: inset(0 0 0 0);
+}
+.glitch::before{
+  color:var(--hard);
+  animation:glitchTop 3.2s infinite linear;
+  opacity:.7;
+}
+.glitch::after{
+  color:var(--easy);
+  animation:glitchBot 2.6s infinite linear;
+  opacity:.6;
+}
+@keyframes glitchTop{
+  0%,92%,100%{clip-path:inset(0 0 100% 0); transform:translate(0,0);}
+  93%{clip-path:inset(0 0 60% 0); transform:translate(-2px,-1px);}
+  95%{clip-path:inset(30% 0 40% 0); transform:translate(2px,1px);}
+  97%{clip-path:inset(0 0 80% 0); transform:translate(-1px,0);}
+}
+@keyframes glitchBot{
+  0%,90%,100%{clip-path:inset(100% 0 0 0); transform:translate(0,0);}
+  91%{clip-path:inset(60% 0 0 0); transform:translate(2px,1px);}
+  94%{clip-path:inset(20% 0 50% 0); transform:translate(-2px,0);}
+  96%{clip-path:inset(70% 0 0 0); transform:translate(1px,-1px);}
+}
+@media (prefers-reduced-motion: reduce){
+  .glitch::before,.glitch::after{animation:none; display:none;}
+}
+
+/* --- выбор пути: две большие карточки --- */
+.paths{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:34px;
+}
+@media (max-width:640px){ .paths{grid-template-columns:1fr;} }
+
+.path-card{
+  position:relative;
+  border-radius:var(--radius);
+  padding:28px 24px;
+  border:1px solid var(--line);
+  background:var(--bg-panel);
+  cursor:pointer;
+  text-align:left;
+  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  overflow:hidden;
+}
+.path-card:hover{transform:translateY(-4px);}
+.path-card:focus-visible{outline:2px solid var(--hard2); outline-offset:3px;}
+
+.path-card.easy{border-color:var(--easy-dim);}
+.path-card.easy:hover{border-color:var(--easy); box-shadow:0 0 30px -10px var(--easy);}
+.path-card.hard{border-color:var(--hard-dim);}
+.path-card.hard:hover{border-color:var(--hard); box-shadow:0 0 30px -10px var(--hard);}
+
+.path-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  padding:3px 9px;
+  border-radius:999px;
+  display:inline-block;
+  margin-bottom:14px;
+}
+.path-card.easy .path-tag{background:var(--easy-dim); color:var(--easy);}
+.path-card.hard .path-tag{background:var(--hard-dim); color:var(--hard);}
+
+.path-card h3{
+  font-family:'JetBrains Mono',monospace;
+  font-size:22px;
+  margin:0 0 8px;
+}
+.path-card p{color:var(--muted); font-size:14.5px; line-height:1.55; margin:0;}
+
+.path-quote{
+  margin-top:16px;
+  font-size:12.5px;
+  color:var(--muted);
+  font-style:italic;
+  border-left:2px solid var(--line);
+  padding-left:10px;
+}
+
+/* --- общие панели/карточки --- */
+.panel{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:22px 22px;
+  margin-bottom:16px;
+}
+.panel-tight{padding:16px 18px;}
+
+.btn{
+  font-family:'JetBrains Mono',monospace;
+  font-weight:600;
+  font-size:14px;
+  letter-spacing:.02em;
+  border-radius:10px;
+  padding:12px 20px;
+  border:1px solid var(--line);
+  background:var(--bg-panel-2);
+  color:var(--text);
+  cursor:pointer;
+  transition:all .15s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.btn:hover{border-color:var(--muted); transform:translateY(-1px);}
+.btn.primary{background:var(--hard2); color:#06170a; border-color:var(--hard2);}
+.btn.primary:hover{box-shadow:0 0 20px -6px var(--hard2);}
+.btn.ghost{background:transparent;}
+.btn:disabled{opacity:.4; cursor:not-allowed; transform:none;}
+
+.badge{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:3px 9px;
+  border-radius:999px;
+  background:var(--bg-panel-2);
+  color:var(--muted);
+  border:1px solid var(--line);
+}
+.badge.on{background:rgba(124,255,107,.12); color:var(--hard2); border-color:rgba(124,255,107,.3);}
+.badge.off{background:rgba(255,62,165,.1); color:var(--hard); border-color:rgba(255,62,165,.3);}
+
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+@media (max-width:640px){.grid-2{grid-template-columns:1fr;}}
+
+.world-list{list-style:none; margin:0; padding:0; display:grid; gap:10px;}
+.world-list li{
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--bg-panel-2);
+  font-size:14px;
+  color:var(--muted);
+}
+.world-list li strong{color:var(--text); font-family:'JetBrains Mono',monospace;}
+.world-list li.active{border-color:var(--hard2); background:rgba(124,255,107,.06);}
+.world-list li.active strong{color:var(--hard2);}
+
+/* --- квест-трекер (движуха) --- */
+.quest-track{display:grid; gap:14px; margin-top:18px;}
+.quest{
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px 20px;
+  background:var(--bg-panel);
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+  justify-content:space-between;
+}
+.quest.locked{opacity:.45;}
+.quest.done{border-color:rgba(124,255,107,.35); background:rgba(124,255,107,.05);}
+.quest.failed{border-color:rgba(255,62,165,.35); background:rgba(255,62,165,.05);}
+.quest-num{
+  font-family:'JetBrains Mono',monospace;
+  color:var(--muted);
+  font-size:13px;
+}
+.quest-title{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; margin:4px 0 6px;}
+.quest-desc{color:var(--muted); font-size:13.5px; line-height:1.5;}
+.quest-actions{display:flex; gap:8px; flex:none;}
+
+/* --- карта площадки --- */
+.map-wrap{
+  position:relative;
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--bg-panel-2);
+  aspect-ratio:4/3;
+}
+.map-wrap img{width:100%;height:100%;object-fit:cover; display:block; opacity:.85;}
+.map-pin{
+  position:absolute;
+  transform:translate(-50%,-100%);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  font-weight:700;
+  color:#06170a;
+  background:var(--hard2);
+  padding:3px 8px;
+  border-radius:8px 8px 8px 2px;
+  box-shadow:0 0 14px rgba(124,255,107,.5);
+  white-space:nowrap;
+}
+.map-pin.me{background:var(--hard); color:#fff; box-shadow:0 0 14px rgba(255,62,165,.6);}
+.map-fallback{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--muted); font-size:13px; text-align:center; padding:20px;
+}
+
+/* --- форма --- */
+.field{margin-bottom:14px;}
+.field label{
+  display:block; font-family:'JetBrains Mono',monospace;
+  font-size:12px; color:var(--muted); margin-bottom:6px; letter-spacing:.04em;
+}
+.field input, .field select{
+  width:100%;
+  background:var(--bg-panel-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:11px 13px;
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-size:14.5px;
+}
+.field input:focus, .field select:focus{outline:2px solid var(--hard2); outline-offset:1px; border-color:transparent;}
+
+footer.site{
+  text-align:center;
+  color:var(--muted);
+  font-size:12.5px;
+  margin-top:50px;
+  font-family:'JetBrains Mono',monospace;
+}
+footer.site a{color:var(--hard2); text-decoration:none;}
+
+.divider{height:1px; background:var(--line); margin:28px 0;}
+
+.reset-link{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  color:var(--muted);
+  text-decoration:underline;
+  background:none; border:none; cursor:pointer; padding:0;
+}
